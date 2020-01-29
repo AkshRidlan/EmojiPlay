@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdn.rawgit.com/jgthms/minireset.css/master/minireset.css">
+		<link rel="stylesheet" href="css/debug.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<style>
+
+:root {
+	font: 1rem/1.175 "BlinkMacSystemFont", -apple-system, "Roboto", sans-serif;
+}
+
+#app {
+	display: flex;
+	justify-content: center; align-items: center;
+	width: 100vw; height: 100vh;
+	font-weight: 900; font-size: 8rem;
+	color: hsl(0, 0%, 100%);
+	background: hsl(240, 100%, 67%);
+	user-select: none;
+}
+
+img {
+	width: 8rem; height: 8rem;
+	vertical-align: calc(-0.12109375em);
+}
+
+.breathe--man { animation: breathe 4.0s infinite; }
+.breathe--dog { animation: breathe 0.5s infinite; }
+
+@keyframes breathe {
+	  0% { transform: scale(0.95); }
+	 50% { transform: scale(1.05); }
+	100% { transform: scale(0.95); }
+}
+
+		</style>
+	</head>
+	<body>
+
+		<div id="app" :style="{ background: background() }">
+			<p v-html="active" @click="animagus" :class="breathe()"></p>
+		</div>
+
+		<script>
+
+"use strict"
+
+// emojify returns the corresponding emoji image
+function emojify(name) {
+	var out = `<img src="emojis/` + name + `.png">`
+	return out
+}
+
+var app = new Vue({
+	el: "#app",
+	data: {
+		active: emojify("sirius--man"),
+		// sirius is an object that contains two states: man and dog
+		sirius: {
+			man: emojify("sirius--man"),
+			dog: emojify("sirius--dog")
+		}
+	},
+	methods: {
+		// an animagus is a wizard whom can shapeshift
+		animagus: function () {
+			this.active = (
+				this.active == this.sirius.man ?
+					this.sirius.dog :
+					this.sirius.man
+			)
+		},
+		// breathe returns the corresponding .breathe--*
+		breathe: function () {
+			return (
+				this.active == this.sirius.man ?
+					"breathe--man" :
+					"breathe--dog"
+			)
+		},
+		// background returns the corresponding background
+		background: function () {
+			return (
+				this.active == this.sirius.man ?
+					"" :
+					"black"
+			)
+		},
+	}
+})
+
+		</script>
+
+	</body>
+</html>s
