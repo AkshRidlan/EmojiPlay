@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdn.rawgit.com/jgthms/minireset.css/master/minireset.css">
+		<link rel="stylesheet" href="css/debug.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900">
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+		<style>
+
+:root {
+	--white      : #ffffff;
+	--orange     : #ff691f;
+	--yellow     : #fab81e;
+	--lightgreen : #7fdbb6;
+	--green      : #19cf86;
+	--lightblue  : #91d2fa;
+	--blue       : #1b95e0;
+	--grey       : #abb8c2;
+	--red        : #e81c4f;
+	--pink       : #f58ea8;
+	--purple     : #981ceb;
+	--black      : #000000;
+
+	font: 1rem/1.175 "BlinkMacSystemFont", -apple-system, "Roboto", sans-serif;
+}
+
+.app {
+	display: flex;
+	justify-content: center; align-items: center;
+	width: 100vw; height: 100vh;
+	font-weight: 900; font-size: 8rem;
+	color: var(--green);
+	user-select: none;
+}
+
+img {
+	width: 8rem; height: 8rem;
+	vertical-align: calc(-0.12109375em);
+}
+
+.jitter {
+	display: inline-block;
+	animation: jitter 0.33s infinite alternate;
+}
+
+@keyframes jitter {
+	  0% { transform: rotate( 0deg); }
+	 33% { transform: rotate( 3deg); }
+	 67% { transform: rotate(-3deg); }
+	100% { transform: rotate( 0deg); }
+}
+
+.theme--alive { color: var(--white); background: var(--green); }
+.theme--dead  { color: var(--red  ); background: var(--black); }
+
+		</style>
+	</head>
+	<body>
+
+		<div class="app"
+            :class="{ 'theme--alive': open() && alive(), 'theme--dead': ! alive() }">
+			<p>
+				Click the box!<br>
+				The Animal's...<!--
+			 --><span
+					v-html="Animal"
+					@click="random_fluctuation()" :class="{ jitter: alive() }"
+				></span><!--
+			 -->!
+			</p>
+		</div>
+
+		<script>
+
+"use strict"
+
+// emojify returns the corresponding emoji image
+function emojify(name) {
+	var out = `<img src="emojis/` + name + `.png">`
+	return out
+}
+
+// rand returns a random item from an array
+function rand(...arr) {
+	var x = Math.floor(Math.random() * arr.length)
+	return arr[x]
+}
+
+var app = new Vue({
+	el: ".app",
+	data: {
+		Animal: emojify("box"),
+		alive_Animal: [
+			emojify("cat--smile"),
+			emojify("fish"),
+			emojify("elephent"),
+			emojify("frog"),
+			emojify("lion"),
+			emojify("tiger" ),
+			emojify("pig" ),
+			emojify("rabbit"),
+			emojify("octopus")
+		],
+		dead_Animal: [
+			emojify("crossbones"),
+			emojify("skull")
+		],
+	},
+	methods: {
+		// open returns whether the box is open
+		open: function () {
+			return this.Animal != emojify("box")
+		},
+		// alive returns whether the Animal is alive
+		alive: function () {
+			return (
+				this.Animal != emojify("crossbones") &&
+				this.Animal != emojify("skull")
+			)
+		},
+		// random_fluctuation observes whether the Animal is alive or dead
+		random_fluctuation: function () {
+			if (this.open()) {
+				this.Animal = emojify("box")
+				return
+			}
+			this.Animal = rand(
+				rand(...this.alive_Animal),
+				rand(...this.dead_Animal),
+			)
+		}
+	}
+})
+
+		</script>
+
+	</body>
+</html>
